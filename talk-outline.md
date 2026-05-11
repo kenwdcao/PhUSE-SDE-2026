@@ -22,12 +22,15 @@
 
 A brief acknowledgment woven into the opening — not a standalone section.
 
-- Nod to the audience: Python is the more familiar language in the stats world
-- Why TypeScript here: it is one of the very few mainstream languages that runs natively across **browser, server, and terminal** — built on JavaScript, but with the type system that makes larger apps maintainable
-- This versatility is exactly what makes today's talk possible: the same language powers the web app *and* the terminal app in the title
-- Natural bridge into Section 1: "and that 'runs everywhere' story starts with React"
+**Speaker line (final):**
+> *"Python is probably the language most of you reach for day to day. Today I'm using TypeScript — because it's one of the few languages that runs in the browser, on a server, and in a terminal, and you'll see all three today. That 'runs everywhere' story is what makes the rest of this talk possible."*
 
-*To fill in: the exact one-liner. Current draft — "Python may be more familiar in our world; I'm using TypeScript today because it's one of the few languages that runs in the browser, on a server, and in a terminal — and you'll see all three today."*
+Why this works:
+- Meets the audience where they are (acknowledges Python's dominance in stats)
+- Pitches TS's **reach** rather than its type system — reach directly maps to the "Web and Terminal" in the title
+- The last sentence is the natural bridge into Section 1
+
+*No slide. Delivered verbally as part of the opening, right before "React through a SAS lens."*
 
 ---
 
@@ -63,55 +66,170 @@ Key points on the slide:
 
 ### 2. Ink: React in the terminal (≈4 min)
 
-- Ink is "React with a terminal renderer" — same mental model, different output target
-- Why terminal apps fit our world:
-  - Run locally → direct access to spec files, skill libraries, SAS datasets, existing CLI tools (foreshadowing the demo: the agent reads a local spec and a local best-practices file, then writes a `.sas` file next to them)
-  - Constrained UI surface → fewer design decisions, less time on CSS/layout
-  - Fast iteration → ideal for internal tools and prototypes
+Three beats: what Ink is, why the terminal is a good fit for our world, and a tiny snippet to prove it.
 
-*To fill in: one short Ink snippet or screenshot.*
+#### Beat 1 — What Ink is (≈30 sec)
+
+**Speaker line:**
+> *"Ink is the terminal destination. Same React you'd write for a web page — components, props, state — but it renders into boxes of text instead of HTML elements. Flexbox layout, keyboard input, all of it, in your terminal."*
+
+Slide: one split image — a React web component next to the same-shape Ink component, with `div/span` on the left and `Box/Text` on the right.
+
+#### Beat 2 — Why terminal apps fit our world (≈2 min)
+
+Three reasons, one line each.
+
+- **Runs locally.** Direct access to spec files, skill libraries, SAS datasets, existing CLI tools. No CORS, no upload/download, no "can I reach your server?" — the demo's agent reads a local spec and writes a `.sas` file next to it.
+- **Constrained UI surface.** Text and boxes, not a blank canvas. Fewer design decisions, no CSS, no responsive breakpoints. You spend your time on logic, not layout.
+- **Fast iteration.** The two points above compress the "from idea to working tool" loop. An afternoon gets you a real internal prototype you can hand to a colleague over `npm link`.
+
+Slide: three icons + one-line captions. No paragraph text.
+
+#### Beat 3 — A tiny snippet (≈1 min)
+
+Show the smallest believable Ink program — a counter or a streaming log — so the audience sees JSX rendering to the terminal with their own eyes.
+
+```tsx
+import { render, Box, Text, useInput } from 'ink';
+import { useState } from 'react';
+
+function Counter() {
+  const [n, setN] = useState(0);
+  useInput((input) => {
+    if (input === '+') setN(n + 1);
+  });
+  return (
+    <Box borderStyle="round" paddingX={1}>
+      <Text>Count: <Text color="cyan">{n}</Text>  (press +)</Text>
+    </Box>
+  );
+}
+
+render(<Counter />);
+```
+
+**Speaker line over the snippet:**
+> *"Hooks, JSX, props, state. The mental model you'd have for a web page, pointed at a terminal. That's all Ink is."*
+
+Closing beat: *"Now we have the UI half. Let's talk about the intelligence half."* → bridges into Section 3.
+
+*To fill in (optional): one screenshot of the counter running, for the slide.*
 
 ---
 
 ### 3. Bridge: from UI to AI (≈1 min)
 
-- We now have a way to build a terminal UI quickly
-- Next question: how do we give it intelligence?
-- One-line transition into the AI SDK
+One line to carry the audience from "we can build a terminal UI fast" to "now let's make it smart."
 
-*To fill in: the exact bridging sentence.*
+**Speaker line:**
+> *"So we have a way to build a terminal UI in an afternoon. The question is: how do we make it useful for the kind of work we actually do? That's where the AI SDK comes in."*
+
+No slide transition tricks — this is a single sentence between two section slides.
 
 ---
 
 ### 4. AI SDK: what it is and what it solves (≈3 min)
 
-- The problem the AI SDK solves for developers:
-  - Different model providers have different APIs, streaming formats, tool-calling conventions
-  - The AI SDK gives a single TypeScript interface across providers
-- Two pieces, at a glance:
-  - **AI SDK Core** — provider-agnostic model calls, streaming, tools
-  - **AI SDK UI** — headless, framework-agnostic UI primitives (works in web *and* terminal)
+Three beats: the problem, Core, UI. The UI beat is where the talk's title ("Web **and** Terminal Apps") gets paid off.
 
-*To fill in: a concrete "before/after" showing what the AI SDK removes.*
+#### Beat 1 — The problem (≈1 min)
+
+**Speaker line:**
+> *"If you've tried to call an LLM from code, you've noticed: every provider is different. Anthropic, OpenAI, Google, Bedrock, Azure — different request formats, different streaming protocols, different tool-calling conventions. Swap a provider and you rewrite."*
+
+Slide: a side-by-side of two provider SDKs with the same intent expressed differently. Caption: *"This is the problem."*
+
+#### Beat 2 — AI SDK Core (≈1 min)
+
+**Speaker line:**
+> *"AI SDK Core is one TypeScript interface across all of them. `streamText`, `generateText`, `tool()` — same function, you change a model string instead of rewriting your code."*
+
+Slide: one short code block showing `streamText({ model: anthropic("claude-sonnet-4-6"), ... })` with the `model:` line highlighted. Subtext: *"Change this line, keep everything else."*
+
+#### Beat 3 — AI SDK UI (≈1 min) — *title payoff*
+
+**Speaker line:**
+> *"AI SDK UI is the other half. It's **headless** — no components, just hooks and state machines for chat, streaming, and tool approvals. Headless means you bring your own rendering. On the web, React on the DOM. In the terminal, React with Ink. **Same hooks, same patterns, two targets.** That's what the title meant by 'Web and Terminal Apps'."*
+
+Slide: the same `useChat`-style hook rendered twice — once into `<div>` (web), once into `<Box>` (Ink). This is the single most important visual in the talk.
+
+*To fill in: the two side-by-side rendering snippets.*
 
 ---
 
 ### 5. The three concepts that matter for the demo (≈4 min)
 
-Each concept is introduced using one of the tools from the demo agent (Section 6) — no throwaway examples.
+Each concept is introduced using one of the tools from the demo agent (Section 6) — no throwaway examples. All snippets are lifted directly from the demo source.
 
-- **Streaming output** — anchor tool: `adam_plan`
-  - The plan is several paragraphs of markdown; showing it token-by-token is both a real UX need and the most visible "aha" moment for the audience
-  - Contrast: wait 15 seconds staring at a blank screen vs. watch the plan build itself line by line
-- **Tools** — anchor tool: `read_spec`
-  - Simplest tool to explain: structured input (spec path), structured output (dataset metadata, variables, derivations)
-  - Teaching point: the model doesn't parse the spec — our code does; the model decides *when* to call it
-- **Tool Approval** — anchor tool: `gen_program`
-  - Only the tool that writes to disk needs approval; `read_spec`, `read_skill`, `adam_plan` are read-only or pure-text
-  - SAS-world parallel: like the difference between `PROC PRINT` and `PROC SQL ... DELETE` — not all operations deserve the same level of trust
-  - This is the teaching point, not just a safety feature
+#### Streaming — anchor tool: `adam_plan` (≈1 min 20 sec)
 
-*To fill in: one short code sketch per concept, ideally pulled directly from the demo source.*
+**Speaker line:**
+> *"The plan is several paragraphs of markdown. You could wait 15 seconds and show it all at once — or you could stream it. Same API call, one line different."*
+
+```ts
+const { textStream } = streamText({
+  model: anthropic('claude-sonnet-4-6'),
+  prompt: buildPlanPrompt(spec, skill),
+});
+
+for await (const chunk of textStream) {
+  appendToPlan(chunk);   // Ink re-renders on each chunk
+}
+```
+
+Teaching beats:
+- The `for await` loop is the whole trick — tokens arrive, UI updates
+- Ink's reactivity is what makes this feel native (no manual repainting)
+- Contrast the UX: *blank screen for 15 sec* vs *plan builds itself line by line*
+
+#### Tools — anchor tool: `read_spec` (≈1 min 20 sec)
+
+**Speaker line:**
+> *"The model doesn't parse Excel. Our code does. The model decides **when** to call it — that's the whole idea of a tool."*
+
+```ts
+const readSpec = tool({
+  description: 'Parse a Pinnacle 21 ADaM spec file',
+  inputSchema: z.object({ path: z.string() }),
+  execute: async ({ path }) => {
+    return parseP21Workbook(path);   // plain TS, no AI involved
+  },
+});
+
+streamText({ model, tools: { read_spec: readSpec }, prompt: userMessage });
+```
+
+Teaching beats:
+- `inputSchema` is the contract — the model can only call it with a valid shape
+- `execute` is just a TypeScript function; the AI never touches the xlsx bytes
+- The model sees the tool's description and decides when to invoke it
+
+#### Tool Approval — anchor tool: `gen_program` (≈1 min 20 sec)
+
+**Speaker line:**
+> *"`read_spec` and `read_skill` are read-only, so they run immediately. `gen_program` writes to disk — so it earns a prompt. Tool Approval is about **side effects**, not about AI."*
+
+```ts
+const genProgram = tool({
+  description: 'Write a draft SAS program to disk',
+  inputSchema: z.object({
+    plan: z.string(),
+    skill: z.string(),
+    datasetType: z.string(),
+    outputPath: z.string(),
+  }),
+  needsApproval: true,                         // <-- the whole difference
+  execute: async (input) => writeSasFile(input),
+});
+```
+
+Teaching beats:
+- One flag — `needsApproval: true` — converts a tool into a gated tool
+- The SDK pauses the loop and surfaces the pending call to the UI; the UI (Ink) renders the prompt
+- SAS-world parallel: like the difference between `PROC PRINT` (safe) and `PROC SQL ... DELETE` (gated) — not all operations deserve the same trust
+- **This is the real point:** the gate lives in your code, not in the model
+
+*Delivery note: each of the three blocks fits on one slide. The code is short on purpose — the speaker line does the work, the code proves it.*
 
 ---
 
@@ -174,25 +292,86 @@ The demo will most likely **not** be run live on stage — instead, screenshots 
 
 ### 7. Wrap-up and Q&A (≈3 min)
 
-- Recap: SAS macro → React component; PROC REPORT + ODS → React renderers; Ink + AI SDK → intelligent local tools
-- Where to go next (links, repos)
-- Q&A
+One slide to recap the talk's through-line, one slide for resources, then Q&A.
 
-*To fill in: closing line and resource list.*
+#### Recap slide
+
+The whole talk is one idea at three altitudes. The recap slide says it in three lines:
+
+- **Language:** TypeScript — one language, browser + server + terminal
+- **Framework:** React — one component model, DOM + Ink + Native (like PROC REPORT + ODS)
+- **Intelligence:** AI SDK — one interface, any provider; headless UI, web + terminal
+
+**Speaker line:**
+> *"Same story, three altitudes. Learn it once, use it in the browser, on the server, and in the terminal. That's what lets you build an internal tool like today's demo in an afternoon."*
+
+#### Resources slide
+
+- **Ink** — `github.com/vadimdemedes/ink`
+- **Vercel AI SDK** — `ai-sdk.dev` (docs), `github.com/vercel/ai`
+- **Today's demo code** — *repo link to be added*
+- **Slides & notes** — *link to be added*
+- **Contact** — Yong Cao, Phastar
+
+#### Q&A posture
+
+- Expect questions on: regulatory / validation concerns, hallucination risk, how this fits next to existing macro libraries, running without internet, cost per run
+- Prepared answers live in a separate speaker-notes doc (not in the slide deck)
+- If a question requires a live run, the demo app is ready on the laptop as a backup
+
+*To fill in: final repo and slides URLs; exact wording of the one-line closer before Q&A.*
 
 ---
 
 ## Open questions for the speaker
 
-- The session title includes "Web and Terminal Apps" but the current outline is terminal-only. Add a brief web comparison, or adjust the title?
-- Is there a specific clinical/stats scenario the demo should target (e.g., reading an ADaM dataset, summarizing a log) so the audience sees immediate relevance?
-- Tool Approval: shown only inside the demo, or called out as its own slide?
+Most of the original open questions were resolved while drafting the sections. Only one decision is still outstanding:
+
+- **Keep the BDS coda in the demo (Section 6)?** Showing `read_spec` on an ADLB spec at the end demonstrates the architecture scales, but it costs ~1 minute. If the talk runs long in rehearsal, this is the first thing to cut and replace with a tighter jump to the recap.
+
+Decisions already made (recorded here for the PPT agent's reference):
+
+- **Web vs Terminal scope** — paid off in Section 4 Beat 3 via the AI SDK UI "same hooks, two targets" slide; no separate web demo needed.
+- **Tool Approval placement** — discussed conceptually in Section 5 (`needsApproval: true` snippet), demonstrated visually in Section 6 Act 3; no dedicated standalone slide.
+- **Demo scenario** — ADaM agent with four tools (`read_spec`, `read_skill`, `adam_plan`, `gen_program`) over Pinnacle 21 specs; full spec in Section 6 and in `demo-app-prompt.md`.
+- **Live vs recorded demo** — captured as screenshots / GIFs embedded in slides; not run live. Speaker keeps the built app on the laptop as a Q&A backup.
 
 ---
 
-## Handoff notes for the PPT agent (to be refined)
+## Handoff notes for the PPT agent
 
-- Slide density should stay low — this is a 30-minute talk with a live demo
-- Every React/AI concept should be anchored to a SAS or clinical-programming reference point where possible
-- Keep code snippets short; prefer one idea per slide
+**Deck shape**
+
+- Total runtime: 30 minutes, including Q&A. Target ≈25 minutes of speaking + 5 min Q&A.
+- Estimated slide count: 18–22. Section map:
+  - Title + speaker intro: 1 slide
+  - Section 0 (TypeScript): **no slide** — verbal only
+  - Section 1 (React analogies): 2 slides (one per analogy)
+  - Section 2 (Ink): 3 slides (what Ink is, why terminal, counter snippet)
+  - Section 3 (bridge): **no slide** — verbal transition
+  - Section 4 (AI SDK): 3 slides (the problem, Core, UI with the side-by-side web/terminal code)
+  - Section 5 (three concepts): 3 slides (one per concept, each with a code block)
+  - Section 6 (demo): 4–6 slides built from screenshots/GIFs (parsed spec → streamed plan → approval prompt → rejection state → written file → optional BDS coda)
+  - Section 7 (wrap-up): 2 slides (recap, resources)
+
+**Visual priorities**
+
+- **Most important visual:** Section 4 Beat 3 — `useChat`-style hook rendered once into `<div>` (web) and once into `<Box>` (Ink), side by side. This single slide pays off the talk title.
+- **Second most important:** Section 6 approval prompt screenshot — this is the "Tool Approval" moment the audience remembers.
+- **Third:** Section 2 counter snippet rendered in the terminal — first proof that JSX really runs in a terminal.
+
+**Style rules**
+
+- Low density: at most one idea per slide. Many slides will be a speaker line + one short code block or one image.
+- Every code block is short (≤ 10 lines visible). Longer logic lives in the demo repo, not on screen.
+- Every AI/React concept is anchored to a SAS or clinical-programming reference point where it exists; never introduce a frontend term without a bridge.
+- Use one accent color consistently (cyan or green); red reserved for the rejection state in Section 6.
+- No em dashes in slide text — the speaker notes use them, but slides use short phrases.
+
+**Inputs for the PPT agent**
+
+- This file (`talk-outline.md`) is the source of truth for content and section order.
+- `demo-app-prompt.md` is the source of truth for the demo code and the screenshots that will be embedded in Section 6.
+- Speaker lines marked with `>` in each section should appear in the slide notes (for the speaker), not on the slide itself.
+- When generating code slides, pull snippets from the demo repo rather than paraphrasing the sketches in this outline.
 
