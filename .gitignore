@@ -1,0 +1,8 @@
+# Everything in archive
+/archive/
+
+# Everything in ai-sdk-ink-phuse
+/ai-sdk-ink-phuse/
+
+# .DS_Store
+.DS_Store
